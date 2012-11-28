@@ -1,0 +1,136 @@
+<img id="top" src='/static/jsui/images/topology.png'>
+{%for p in dev_list%}
+<div id=hst{{p.id}} class=drag style="position:absolute;{{p.pos}}"><img src='/static/jsui2/images/kvm.png'/>{{p.name}}</div>
+<div id="dialog{{p.id}}" title={{p.name}} style="display: none">
+
+</div>
+<script>
+$(function(){
+        $("#hst{{p.id}}").bind('dblclick',function(event){
+		$.ajax({type:"GET",dataType:"html",url:"/ajax/top/"+{{p.id}}+"/host_tab",success:function(res){
+                        $("#dialog_ovs").html(res);
+                        $("#tabset").tabs();
+                }});
+                $("#dialog_ovs").dialog({
+			buttons:{
+				"remove":function(){
+					jsPlumb.deleteEndpoint("hst{{p.id}}");
+					$("#hst{{p.id}}").remove();
+					$.ajax({
+					type:"POST",
+					dataType:"text",
+					url:"/ajax/top/"+{{p.id}}+"/device_remove",
+					
+					});
+					$("#dialog_ovs").dialog("close");
+				},
+				"save":function(){
+                                        var data=$("#host_form").serialize();
+                                        $.ajax({
+                                                type:"POST",
+                                                dataType:"text",
+                                                url:"/ajax/top/"+{{p.id}}+"/host_mod",
+                                                data:data
+                                        });
+					$("#hst{{p.id}}").html("<img src='/static/jsui2/images/kvm.png'/>"+$("#host_form>input").val());
+                                        $("#dialog_ovs").dialog("close");
+                                }
+			},
+			title:"{{p.name}}"
+		});
+		
+        });
+	jsPlumb.addEndpoint("hst{{p.id}}",{uuid:"hst{{p.id}}",isSource:true,isTarget:false,maxConnections:10,uniqueEndpoint:true,connector:["Straight"],ConnectionsDetachable:false,});
+	jsPlumb.draggable("hst{{p.id}}");
+});
+</script>
+
+{%endfor%}
+{%for p in ovs_list%}
+<div id="ovs{{p.id}}" style="position:absolute;{{p.pos}}"><img src='/static/jsui2/images/switch.png'/>{{p.name}}</div>
+<script>
+$(function(){
+        $("#ovs{{p.id}}").bind('dblclick',function(event){
+		$.ajax({type:"GET",dataType:"html",url:"/ajax/top/"+{{p.id}}+"/ovs_tab",success:function(res){
+			$("#dialog_ovs").html(res);
+			$("#tabset").tabs();
+		}});
+		$("#dialog_ovs").dialog({
+                        buttons:{
+                                "remove":function(){
+                                        jsPlumb.deleteEndpoint("ovs{{p.id}}");
+					$("#ovs{{p.id}}").remove();
+                                        $.ajax({
+                                        type:"POST",
+                                        dataType:"text",
+                                        url:"/ajax/top/"+{{p.id}}+"/ovs_remove",
+                                        
+                                        });
+				
+                                        $("#dialog_ovs").dialog("close");
+                                },
+				"save":function(){
+					var data=$("#ovs_form").serialize();
+					$.ajax({
+						type:"POST",
+						dataType:"text",
+						url:"/ajax/top/"+{{p.id}}+"/ovs_mod",
+						data:data
+					});
+					if($("#ovs_form>select").val()=="switch"){
+						$("#ovs{{p.id}}").html("<img src='/static/jsui2/images/switch.png'/>"+$("#ovs_form>input").val());
+					}
+					else if($("#ovs_form>select").val()=="router"){
+						$("#ovs{{p.id}}").html("<img src='/static/jsui2/images/router.png'/>"+$("#ovs_form>input").val());
+					}
+					$("#dialog_ovs").dialog("close");
+				}
+                        },
+			title:"{{p.name}}"
+                });
+                
+        });
+        jsPlumb.addEndpoint("ovs{{p.id}}",{uuid:"ovs{{p.id}}",isSource:true,isTarget:true,maxConnections:10,uniqueEndpoint:true,connector:[ "Straight"],ConnectionsDetachable:false,});
+        jsPlumb.draggable("ovs{{p.id}}");
+});
+</script>
+
+{%endfor%}
+<script>
+$(function(){
+	$("#top").bind('dblclick',function(event){
+                $.ajax({type:"GET",dataType:"html",url:"/ajax/top/"+{{top_id}}+"/top_tab",success:function(res){
+                        $("#dialog_ovs").html(res);
+                        $("#tabset").tabs();
+                }});
+		$("#dialog_ovs").dialog({
+                        buttons:{
+                                "save":function(){
+                                        var data=$("#top_form").serialize();
+                                        $.ajax({
+                                                type:"POST",
+                                                dataType:"text",
+                                                url:"/ajax/top/"+{{top_id}}+"/top_mod",
+                                                data:data
+                                        });
+                                        $("#dialog_ovs").dialog("close");
+                                },
+				"run":function(){
+					$.ajax({
+						type:"GET",
+						dataType:"text",
+						url:"/ajax/top/"+{{top_id}}+"/run",
+					});
+				}
+                        },
+                        title:"Topology",
+			
+                });
+              
+        });
+	{%for p in con_list%}
+	jsPlumb.connect({ConnectionsDetachable:false,source:'{{p.source}}',target:'{{p.target}}}',connector:[ "Straight"]});
+	{%endfor%}
+	
+});
+</script>

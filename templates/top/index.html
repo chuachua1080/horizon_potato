@@ -1,0 +1,26 @@
+{% extends "new/base.html" %}
+{%load i18n%}
+
+{% block content %}
+<h1>{% trans "List of topologies"%}</h1>
+{% if top_list %}
+
+<table class="sortable,filterable">
+  <tr>
+    <th>{% trans "ID"%}</th>
+    <th>{% trans "Name"%}</th>
+    <th>{% trans "Owner"%}</th>
+  </tr>
+{% for top in top_list %}
+  <tr>
+    <td>{{top.id}}</td>
+    <td><a href="{%url topology.show top.id%}">{{top.name}}</a></td>
+    <td>{{top.owner}}</td>
+  </tr>
+{% endfor %}
+</table>
+{% else %}
+Currently you do not have any topologies you can access. Click on "create new topology" to create one.
+{% endif %}
+
+{% endblock %}

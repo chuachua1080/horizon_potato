@@ -1,0 +1,83 @@
+{% extends "pro/base.html" %}
+
+{% load i18n %}
+{% block content %}
+<h1>{%if pro%}{% trans "Edit project"%}{%else%}{% trans "Create new project"%}{%endif%}</h1>
+
+
+<link rel="stylesheet" type="text/css" href="/static/css/jquery-ui.css" />
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui-slide.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('#example_1').datetimepicker();
+	$('#example_2').datetimepicker();
+	$('#example_3').datetimepicker({
+	    showSecond: true,
+	    showMillisec: true,
+	    timeFormat: 'hh:mm:ss:l'
+    });
+	$('#example_4').timepicker({
+	    ampm: true,
+	    hourMin: 8,
+	    hourMax: 16
+    });
+	$('#example_5').datetimepicker({
+	   hour: 13,
+	   minute: 15
+    });
+	$('#example_6').datetimepicker({
+	   numberOfMonths: 2,
+	   minDate: 0,
+	   maxDate: 30
+    });
+	$('#example_7').timepicker({
+	   hourGrid: 4,
+	   minuteGrid: 10
+    });
+
+	
+	var ex8 = $('#example_8');
+
+      ex8.datetimepicker();
+
+      $('#example_8_set_btn').click(function(){
+	      ex8.datetimepicker('setDate', (new Date()) );
+      });
+
+      $('#example_8_get_btn').click(function(){
+	       alert(ex8.datetimepicker('getDate'));
+      });
+});
+</script>
+
+<form action={%if pro%}{%url pro.edit_db pro.id%}{%else%}{%url pro.create_db%}{%endif%} method="post">
+  <table width="100%" border="0">
+    <tr>
+      <td width="30%">{% trans "name:"%}</td>
+      <td><input type="text" name="pname" {%if pro%}value="{{pro.name}}"{%endif%}></td>
+    </tr>
+    <tr>
+      <td width="30%">{% trans "description:"%}</td>
+      <td><textarea name="pattrs" rows="3">{%if pro%}{{pro.attrs}}{%endif%}</textarea></td>
+    </tr>
+    <tr>
+      <td width="30%">{% trans "start time:"%}</td>
+      <td><input type="text" name="start_time" id="example_1" {%if pro%}value="{{pro.start_time}}"{%endif%}></td>
+    </tr>
+    <tr>
+      <td>{% trans "end time:"%}</td>
+      <td><input type="text" name="end_time" id="example_2" {%if pro%}value="{{pro.end_time}}"{%endif%}></td>
+    </tr>
+    <tr>
+      <td width="30%">&nbsp;</td>
+      <td><input type="submit" value={%trans "Save"%}></td>
+    </tr>
+  </table>
+</form>
+
+
+{% endblock %}

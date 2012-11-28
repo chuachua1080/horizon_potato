@@ -1,0 +1,47 @@
+<div id="tabset">
+<ul>
+<li><a href="#panel1">Config</a></li>
+<li><a href="#panel2">Note</a></li>
+<li><a href="#panel3">Control</a></li>
+</ul>
+<div id="panel1">
+<form id="host_form">
+Name:<input type="text" name="name" value="{{host.name}}"/>
+<br>
+Type:<select name="type">
+	<option value="lxc">lxc</option>
+	<option value="kvm">kvm</option>
+</select>
+<br>
+Flavor:<select name="flavor">
+	<option value="tiny">tiny</option>
+	<option value="small">small</option>
+	<option value="medium">medium</option>
+	<option value="large">large</option>
+	<option value="xlarge">xlarge</option>
+</select>
+<br>
+Image:<select name="image">
+	<option value="Ubuntu 11.10 server">Ubuntu 11.10 server</option>
+<select>
+</form>
+</div>
+<div id="panel2">
+<textarea name="note" rows="4" cols="35"></textarea>
+</div>
+<div id="panel3">
+	<div id="start"><img src="/static/icons/start.png"></div>	
+	<div id="stop"><img src="/static/icons/stop.png"></div>	
+	<div id="console"><img src="/static/icons/console.png"></div>	
+</div>
+</div>
+<script>
+$(function(){
+	$("#start").button();
+	$("#stop").button();
+	$("#console").button();
+});
+</script>
+
+
+

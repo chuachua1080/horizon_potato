@@ -1,0 +1,12 @@
+{% extends "new/base.html" %}
+{%load i18n%}
+
+{% block content %}
+
+<div>
+{host:{ {%for hst in hst_list%}{{hst.id}}:{type:{{hst.dtype}} }, {%endfor%} },
+ ovs:{ {%for ovs in ovs_list%}{{ovs.id}}:{type:{{ovs.dtype}} }, {%endfor%} },
+ connection:{ {%for con in con_list%}{{con.id}}:[{{con.source}},{{con.target}}],{%endfor%} },
+}
+</div>
+{% endblock %}

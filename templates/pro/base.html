@@ -1,0 +1,45 @@
+{% extends "tomato.html" %}
+{%load i18n%}
+
+{% block menu_top %}
+<ul>
+	<li class="active"><a href="{%url pro.index%}">{% trans "Projects" %}</a></li>
+	<li><a href="" target="_help">Project</a></li>
+	<li><a href="" target="_help">{% trans "Help" %}</a></li>
+        <li><a href="">{{user.username}}</a></li>
+        <li><a href="/auth/logout">{% trans "Logout" %}</a></li>
+</ul>
+{% endblock %}
+
+{% block left %}
+
+<div id="sidemenu">
+        <h2>{% trans "Projects" %}</h2>
+        <ul>
+                <li><a href="{%url pro.create%}">{% trans "create new project" %}</a></li>
+                <li><a href="{%url pro.index%}">{% trans "list of all projects" %}</a></li>
+        </ul>
+</div>
+{%if pro_id%}
+<div id="sidemenu">
+	<h2>{% trans "Project"%} {{pro_id}}</h2>
+	<ul>
+		<li><a href="{%url top.create pro_id%}">{% trans "create new topology"%}</a></li>
+		<li><a href="{%url pro.info pro_id%}">{% trans "back to project"%}</a></li>
+		<li><a href="{%url pro.edit pro_id%}">{%trans "edit project"%}</a></li>
+		<li><a href="{%url pro.remove pro_id%}">{%trans "delete project"%}</a></li>
+	</ul>
+</div>
+{%endif%}
+{% if top_id %}
+<div id="sidemenu">
+	<h2>Topology {{top_id}}</h2>
+	<ul>
+		<li><a href="{%url top.show pro_id top_id%}">{% trans "show"%}</a></li>
+		<li><a href="{%url top.edit pro_id top_id%}">{% trans "edit"%}</a></li>
+		<li><a href="{%url top.export pro_id top_id%}">{% trans "export"%}</a></li>
+		<li><a href="{%url top.remove pro_id top_id%}" onclick="javascript:return confirm('Are you sure? The topology definition will be deleted!')">{% trans "remove"%}</a></li>
+	</ul>
+</div>
+{% endif %}
+{% endblock %} 

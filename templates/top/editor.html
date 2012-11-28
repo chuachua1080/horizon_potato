@@ -1,0 +1,261 @@
+{% extends "pro/base.html" %}
+
+{% block content %}
+{% if top_id %}
+{% if edit %}
+<h1>Edit {{top.attrs.name}} [{{top_id}}]</h1>
+{% else %}
+<h1>Details of {{top.attrs.name}} [{{top_id}}]</h1>
+{% endif %}
+{% else %}
+<h1>Creation of new topology</h1>
+{% endif %}
+<!--<script src="/static/jsui/jQuery-min.js"></script>
+<script src="/static/jsui/jQuery-ui-min.js"></script>
+-->
+<script src="/static/jsui/jquery-1.8.2.js"></script>
+<script src="/static/jsui/jquery-ui.js"></script>
+<script src="/static/jsui/raphael-min.js"></script>
+<script src="/static/jsui/util.js"></script>
+<script src="/static/jsPlumb/build/1.3.15/js/jquery.jsPlumb-1.3.15-all-min.js"></script>
+<script src="/static/kandytabs.pack.js"></script>
+<link rel="stylesheet" rev="stylesheet" href="/static/kandytabs.css">
+<div id="javascript-error">
+	Please enable javascript in your browser!
+</div>
+<script><!-- 
+$("#javascript-error").hide();
+//--></script>
+<table width="200" border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td><div style="width:60px;height:600px;border-style:solid;border-width:2px 1px 2px 2px;border-color:#911A20">
+      <div style="width:57px;height:60px;text-align:center"><img src="/static/jsui2/images/logo.jpg" style="width:57px;height:auto;" id="logo" alt="niclab" /></div>
+      <div id="host" style="width:57px;height:60px;"><img src="/static/jsui2/images/kvm.png"  alt="" />host</div>
+	<div id="ovs" style="width:57px;height:60px;"><img src="/static/jsui2/images/switch.png"  alt="" />OVS</div>
+    </div></td>
+    <td><div id="editor" style="width:700px;height:600px;border-style:solid;border-width:2px 2px 1px 2px;border-color:#911A20">
+	</div></td>
+  </tr>
+</table>
+<div id="dialog_ovs" style="display: none;">hehe</div>
+<script><!--
+basepath="/static/jsui2/";
+ajaxpath="/ajax/";
+topid="{{top_id}}";
+var deviceNum=0;
+var ovsNum=0;
+$("head").append($('<link href="'+basepath+'glabdesign/jquery-ui-custom.css" rel="stylesheet" type="text/css" />'));
+
+$(function(){
+$("dl").KandyTabs();
+jsPlumb.bind("ready", function(){
+        jsPlumb.setRenderMode(jsPlumb.SVG);
+	jsPlumb.Defaults.Container="editor";
+//	jsPlumb.bind("jsPlumbConnection", function(info) {
+//                var data={"source":info.sourceId,"target":info.targetId};
+//                $.ajax({
+//                        type:"POST",
+//                        dataType:"text",
+//                        url:"/ajax/top/"+topid+"/con_create",
+//                        data:data,
+                        
+//                });
+//        });
+        jsPlumb.bind("dblclick", function(info) {
+		data={"source":info.sourceId,"target":info.targetId};
+		$.ajax({type:"GET",dataType:"html",url:"/ajax/top/con_tab",data:data,success:function(res){
+                        $("#dialog_ovs").html(res);
+                        $("#tabset").tabs();
+                }});
+                $("#dialog_ovs").dialog({
+			title:"connection",
+			buttons:{
+				"remove":function(){
+					var data={"source":info.sourceId,"target":info.targetId};
+					$.ajax({
+                        			type:"POST",
+                        			dataType:"text",
+                        			url:"/ajax/top/"+topid+"/con_remove",
+                        			data:data,
+                        
+                			});
+					$("#dialog_ovs").dialog("close");
+					jsPlumb.detach({source:info.sourceId,target:info.targetId});
+				},
+				"save":function(){
+					var data=$("#con_form").serialize();
+					$.ajax({
+                                                type:"POST",
+                                                dataType:"text",
+                                                url:"/ajax/"+info.sourceId+"/"+info.targetId+"/con_mod",
+                                                data:data
+                                        });
+                                        $("#dialog_ovs").dialog("close");	
+				}
+			} 
+		});
+        });
+	jsPlumb.bind("jsPlumbConnectionDetached",function(info){
+		var data={"source":info.sourceId,"target":info.targetId};
+                $.ajax({
+                        type:"POST",
+                        dataType:"text",
+                        url:"/ajax/top/"+topid+"/con_remove",
+                        data:data,
+                        
+                });
+        });
+});
+$.ajax({type:"GET",dataType:"html",url:ajaxpath+"top/"+topid+"/device_load",success:function(res){
+    $("#editor").html(res);
+//    $( ".drag" ).draggable();
+//    $(".drag").bind('dblclick',function(event){
+//                $("#dialog").dialog();
+//    })
+	jsPlumb.bind("jsPlumbConnection", function(info) {
+                var data={"source":info.sourceId,"target":info.targetId};
+                $.ajax({
+                        type:"POST",
+                        dataType:"text",
+                        url:"/ajax/top/"+topid+"/con_create",
+                        data:data,
+                        
+                });
+        });
+
+}});
+
+$("#host").draggable({
+	helper:"clone",
+//	revert:true,
+	stop:function(event,ui){
+		deviceNum++;
+		var data={"name":"host"+deviceNum,pos:"left:"+ui.offset.left+";top:"+ui.offset.top};
+		$.ajax({type:"POST",dataType:"text",url:ajaxpath+"top/"+topid+"/device_create",async: true, data: data,success:function(res){
+			$("#editor").append($("<div id=hst"+res+" class=drag style='position:absolute;left:"+ui.offset.left+";top:"+ui.offset.top+"'><img src='/static/jsui2/images/kvm.png'/>host"+deviceNum+"</div>"));
+			$("#hst"+res).bind('dblclick',function(event){
+                                $.ajax({type:"GET",dataType:"html",url:"/ajax/top/"+res+"/host_tab",success:function(res2){
+                        		$("#dialog_ovs").html(res2);
+                        		$("#tabset").tabs();
+                		}});
+				$("#dialog_ovs").dialog({
+                                        buttons:{
+                                                "remove":function(){
+                                                        jsPlumb.deleteEndpoint("hst"+res);
+                                                        $("#hst"+res).remove();
+                                                        $.ajax({
+                                                                type:"POST",
+                                                                dataType:"text",
+                                                                url:"/ajax/top/"+res+"/device_remove",
+                                        
+                                                        });
+                                
+                                                        $("#dialog_ovs").dialog("close");
+                                                },
+						"save":function(){
+                                        		var data=$("#host_form").serialize();
+                                        		$.ajax({
+                                                		type:"POST",
+                                                		dataType:"text",
+                                                		url:"/ajax/top/"+res+"/host_mod",
+                                                		data:data
+                                        		});
+                                        		$("#hst"+res).html("<img src='/static/jsui2/images/kvm.png'/>"+$("#host_form>input").val());
+                                        		$("#dialog_ovs").dialog("close");
+                                		}
+                                        },
+					title:"host"+deviceNum
+                                });
+                
+                        });
+			jsPlumb.addEndpoint("hst"+res,{uuid:"hst"+res,isSource:true,isTarget:false,maxConnections:10,uniqueEndpoint:true,connector:["Straight"],ConnectionsDetachable:false,});
+        		jsPlumb.draggable("hst"+res);
+			}
+		});
+
+
+
+		//$("#editor").append($("<div class=drag style='position:absolute;left:"+ui.offset.left+";top:"+ui.offset.top+"'><img src='/static/jsui2/images/kvm.png'/>host"+deviceNum+"</div>"));
+		
+	}
+});
+$("#ovs").draggable({
+	revert:true,
+        helper:"clone",
+        stop:function(event,ui){
+                ovsNum++;
+                var data={"name":"ovs"+ovsNum,pos:"left:"+ui.offset.left+";top:"+ui.offset.top};
+                $.ajax({type:"POST",dataType:"text",url:ajaxpath+"top/"+topid+"/ovs_create",async: true, data: data,success:function(res){
+                        $("#editor").append($("<div id=ovs"+res+"  style='position:absolute;left:"+ui.offset.left+";top:"+ui.offset.top+"'><img src='/static/jsui2/images/switch.png'/>OVS"+ovsNum+"</div>"));
+                        $("#ovs"+res).bind('dblclick',function(event){
+				$.ajax({type:"GET",dataType:"html",url:"/ajax/top/"+res+"/ovs_tab",success:function(res2){
+                        		$("#dialog_ovs").html(res2);
+                        		$("#tabset").tabs();
+                		}});
+        			$("#dialog_ovs").dialog({
+                        		buttons:{
+                                		"remove":function(){
+		                                        jsPlumb.deleteEndpoint("ovs"+res);
+                		                        $("#ovs"+res).remove();
+                                		        $.ajax({
+                      			                	type:"POST",
+                                        			dataType:"text",
+                                        			url:"/ajax/top/"+res+"/ovs_remove",
+                                        
+                                        		});
+                                
+                                        		$("#dialog_ovs").dialog("close");
+                                		},
+						"save":function(){
+                                        		var data=$("#ovs_form").serialize();
+                                        		$.ajax({
+                                                		type:"POST",
+                                                		dataType:"text",
+                                                		url:"/ajax/top/"+res+"/ovs_mod",
+                                                		data:data
+                                        		});
+                                        		if($("#ovs_form>select").val()=="switch"){
+                                                		$("#ovs"+res).html("<img src='/static/jsui2/images/switch.png'/>"+$("#ovs_form>input").val());
+                                        		}
+                                        		else if($("#ovs_form>select").val()=="router"){
+                                                		$("#ovs"+res).html("<img src='/static/jsui2/images/router.png'/>"+$("#ovs_form>input").val());
+                                        		}
+                                        		$("#dialog_ovs").dialog("close");
+                                		}
+                        		},
+					title:"ovs"+ovsNum
+                		});
+                
+        		});
+			jsPlumb.addEndpoint("ovs"+res,{uuid:"ovs"+res,isSource:true,isTarget:true,maxConnections:10,uniqueEndpoint:true,connector:["Straight"],ConnectionsDetachable:false,});
+			jsPlumb.draggable("ovs"+res);
+				
+                        }
+                });
+                
+        }
+});
+//$("[id^=ovs]").bind('dblclick',function(event){
+//	$("#dialog_ovs").dialog({
+//		buttons:{
+//			"remove":function(){
+//				jsPlumb.deleteEndpoint("ovs"+$(this).attr("id"));
+//				$("#ovs"+$(this).attr("id")).remove();
+//				$.ajax({
+//					type:"POST",
+//					dataType:"text",
+//					url:"/ajax/top/"+$(this).attr("id")+"/ovs_remove",
+  //                  
+//				});
+//                       
+//				$("#dialog_ovs").dialog("close");
+//			}		
+//		}
+//	});
+//});
+
+$("#editor").droppable();
+});
+//--></script>
+
+{% endblock %}

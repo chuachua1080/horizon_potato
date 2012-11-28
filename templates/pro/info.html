@@ -1,0 +1,54 @@
+{% extends "pro/base.html" %}
+{%load i18n%}
+
+{% block content %}
+<h1>{% trans "Infomation of project" %}</h1>
+
+<table >
+  <tr>
+    <td >Id:</td>
+    <td>{{pro.id}}</td>
+  </tr>
+  <tr>
+    <td >Name:</td>
+    <td>{{pro.name}}</td>
+  </tr>
+  <tr>
+    <td >Owner:</td>
+    <td>{{pro.owner}}</td>
+  </tr>
+  <tr>
+    <td >Description:</td>
+    <td>{{pro.attrs}}</td>
+  </tr>
+  <tr>
+    <td>Start time:</td>
+    <td>{{pro.start_time}}</td>
+  </tr>
+  <tr>
+    <td>End time:</td>
+    <td>{{pro.end_time}}</td>
+  </tr>
+<tr>
+<td>Topology:</td>
+{%if top_list%}
+<td><table>  
+  <tr>
+    <th>{% trans "ID"%}</th>
+    <th>{% trans "Name"%}</th>
+    <th>{% trans "Owner"%}</th>
+  </tr>
+{% for top in top_list %}
+  <tr>
+    <td>{{top.id}}</td>
+    <td><a href="{%url top.show pro_id top.id%}">{{top.name}}</a></td>
+    <td>{{top.owner}}</td>
+  </tr>
+{% endfor %}
+</table></td>
+{%else%}
+<td>Currently you do not have any topology can access.Click on "create new topology" to create one.</td>
+{% endif %}
+</table>
+
+{% endblock %}

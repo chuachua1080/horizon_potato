@@ -1,0 +1,54 @@
+{% load i18n %}
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
+<html> 
+<head> 
+ 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+
+<title>NicLab TestBed</title> 
+<meta name="DESCRIPTION" content="German Lab Webpage" /> 
+ 
+<link href="/static/style/style.css" rel="stylesheet" type="text/css" /> 
+<link rel="shortcut icon" type="image/x-icon" href="http://www.german-lab.de/favicon.ico" /> 
+
+</head>
+<body>
+
+<div id="nonfooter">
+<div id="border_top"></div> 
+<div id="page"> 
+	<div id="header"> 
+		<div id="minimenu_top" class="smallmenu"></div> 
+		<div id="logo">
+			<img border="0" src="/static/style/logo.jpg" alt="glablogo" />
+		</div> 
+		<div id="logo-text">
+			<h1>IPv6网络安全技术</h1>
+			<br/>
+			<h2>实验验证平台</h2>
+		</div>
+		<div id="menu_top">
+		{% block menu_top %}{% endblock %}
+		</div> 
+	</div> 
+ 
+	<div id="left"> 
+		{% block left %}{% endblock %}
+	</div> 
+ 
+	<div id="content">
+		{% block content %}{% endblock %}
+	</div> 
+	<br class="clearer" /> 
+</div> 
+</div>
+<center>
+	<div id="footer"> 
+    	<div id="legal">
+    		Copyright © 2012 <a href="http://niclab.bupt.edu.cn">Network Information Center</a> of the Beijing University of Post and Telecommunication, see <a href="">license page</a> for details.  
+    	</div> 
+    </div>
+</center>
+</body> 
+</html>

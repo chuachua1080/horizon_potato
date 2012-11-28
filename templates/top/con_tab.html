@@ -1,0 +1,38 @@
+<div id="tabset">
+<ul>
+<li><a href="#panel1">Config</a></li>
+<li><a href="#panel2">Note</a></li>
+</ul>
+<div id="panel1">
+connection from {{source.name}} to {{target.name}}
+<form id="con_form">
+<!--{{source.name}} port:<input type="text" name="sourceport" value="{{con.sourceport}}"/>
+<br>
+{{target.name}} port:<input type="text" name="targetport" value="{{con.targetport}}"/>
+<br>-->
+<div class="">
+<label style="float:left;width:75px" for="bandwith">带宽(Mbps):</label>
+<div>
+    <div >
+	<input type="text" name="bandwidth" placeholder="input 10-100" value="{{con.bandwidth}}" style="width:100px"/>
+    </div>
+    <span></span>
+</div>
+</div>
+<div style="clear:both">
+<label style="float:left;width:75px" for="delay">延迟(ms):</label>
+<div class=>
+    <div >
+        <input type="text" name="delay" placeholder="input 10-100" value="" style="width:100px"/>
+    </div>
+    <span></span>
+</div>
+</div>
+</form>
+</div>
+<div id="panel2">
+<textarea name="note" rows="4" cols="35"></textarea>
+</div>
+</div>
+
+
