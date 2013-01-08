@@ -28,7 +28,7 @@ from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 import horizon
-
+from .main import images,flavors
 
 urlpatterns = patterns('',
     url(r'^$', 'openstack_auth.views.login'),
@@ -63,7 +63,8 @@ urlpatterns = patterns('',
     (r'^ajax/top/con_tab$','potato.ajax.con_tab'),
     (r'^ajax/(?P<s_id>.+)/(?P<t_id>.+)/con_mod$','potato.ajax.con_mod'),
     (r'^ajax/top/(?P<top_id>\d+)/run','potato.ajax.run'),
-
+    (r'^help/images$',images.as_view()),
+    (r'^help/flavors$',flavors.as_view()),
 
 )
 

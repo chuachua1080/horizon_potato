@@ -49,7 +49,7 @@ DATABASES = {
         'NAME': 'potato',                      # Or path to database file if using sqlite3.
         'USER': 'root',                      # Not used with sqlite3.
         'PASSWORD': 'buptnic',                  # Not used with sqlite3.
-        'HOST': '210.25.137.233',                      # Set to empty string for localhost. Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
