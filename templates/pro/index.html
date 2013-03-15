@@ -18,7 +18,7 @@
 {% for pro in pro_list %}
   <tr>
     <td>{{pro.id}}</td>
-    <td><a href="{%url pro.info pro.id%}">{{pro.name}}</a></td>
+    <td><a href="/auth/switch/{{pro.tenant}}">{{pro.name}}</a></td>
     <td>{{pro.start_time}}</td>
     <td>{{pro.end_time}}</td>
     <td>{{pro.owner}}</td>

@@ -30,6 +30,7 @@ $(function(){
                                                 type:"POST",
                                                 dataType:"text",
                                                 url:"/ajax/top/"+{{p.id}}+"/host_mod",
+						//url:"/project/instances/launch",
                                                 data:data
                                         });
 					$("#hst{{p.id}}").html("<img src='/static/jsui2/images/kvm.png'/>"+$("#host_form>input").val());

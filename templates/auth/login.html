@@ -10,7 +10,7 @@
 		<p>{% trans "Please login to create your own project or on " %}<a href="/help">{% trans "Help" %}</a>{% trans " to get more information on using this tool." %}</p>
 	</div>
 	<div style="position:absolute;left:630px;top:0">
-		<form action="" method="post">{% csrf_token %}
+		<form action="/auth/login/" method="post">{% csrf_token %}
 		{{ form.as_p }}
 		<button type="submit" style="float:right">Sign In</button>
 		<input type="hidden" name="next" value="/pro" />

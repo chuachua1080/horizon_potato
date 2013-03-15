@@ -18,12 +18,12 @@ def index(request):
     top_list=Topology.objects.all()
     return render_to_response("topology/index.html",{"top_list":top_list})
 
-def create(request,pro_id):
-    p=Topology(owner='admin',project_id=pro_id)
+def create(request):
+    p=Topology(owner=request.user.username,tenant=request.user.tenant_id)
     p.save()
     p.name = "Topology "+str(p.id)
     p.save()
-    return render_to_response("top/editor.html",{"pro_id":pro_id,"top_id":p.id,"edit":True},context_instance=RequestContext(request))
+    return render_to_response("top/editor.html",{"top_id":p.id,"edit":True},context_instance=RequestContext(request))
 
 def remove(request,pro_id,top_id):
     p=Topology.objects.get(id=top_id)
@@ -32,9 +32,9 @@ def remove(request,pro_id,top_id):
     
 
 
-def show(request,pro_id,top_id):
+def show(request,top_id):
 #    top=Topology.objects.get(id=top_id)
-    return render_to_response("top/editor.html",{"pro_id":pro_id,"top_id":top_id,"edit":False},context_instance=RequestContext(request))
+    return render_to_response("top/editor.html",{"top_id":top_id,"edit":False},context_instance=RequestContext(request))
 
 
 def edit(request,pro_id,top_id):

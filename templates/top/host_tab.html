@@ -8,22 +8,24 @@
 <form id="host_form">
 Name:<input type="text" name="name" value="{{host.name}}"/>
 <br>
-Type:<select name="type">
-	<option value="lxc">lxc</option>
-	<option value="kvm">kvm</option>
+Source:<select name="source_type">
+	<option value="image_id">image</option>
+	<option value="instance_snapshot_id">snapshot</option>
 </select>
 <br>
 Flavor:<select name="flavor">
-	<option value="tiny">tiny</option>
-	<option value="small">small</option>
-	<option value="medium">medium</option>
-	<option value="large">large</option>
-	<option value="xlarge">xlarge</option>
+	<option value=1>tiny</option>
+	<option value=2>small</option>
+	<option value=3>medium</option>
+	<option value=4>large</option>
+	<option value=5>xlarge</option>
 </select>
 <br>
 Image:<select name="image">
-	<option value="Ubuntu 11.10 server">Ubuntu 11.10 server</option>
-<select>
+{% for image in image_list%}
+	<option value="{{image.id}}">{{image.name}}</option>
+{%endfor%}
+</select>
 </form>
 </div>
 <div id="panel2">
@@ -38,8 +40,23 @@ Image:<select name="image">
 <script>
 $(function(){
 	$("#start").button();
+	$("#start").bind('click',function(event){
+		$.ajax({
+        	        type:"POST",
+                	url:"/ajax/top/"+{{host.id}}+"/server_create",
+			dataType:"text",
+			sucess:function(res){
+				
+			}
+                });
+	});
+                
+		
 	$("#stop").button();
 	$("#console").button();
+	$("#console").bind('click',function(event){
+		window.open("{{url}}&title={{host.name}}({{host.instanceId}})")
+	});
 });
 </script>
 

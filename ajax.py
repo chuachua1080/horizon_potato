@@ -17,12 +17,15 @@ from django.db import connection
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
+from openstack_dashboard import api
+
+
 @csrf_exempt
 def device_create(request,top_id):
         res=HttpResponse()
         dname=request.REQUEST["name"]
         dpos=request.REQUEST["pos"]
-        p=Device(name=dname,pos=dpos,topology_id=top_id)
+        p=Device(name=dname,pos=dpos,topology_id=top_id,image="59c08ff9-488f-4b40-b19e-9ccef14006fb",flavor=1)
         p.save()
         res.write(str(p.id))
         return res
@@ -75,20 +78,33 @@ def ovs_tab(request,dev_id):
 def ovs_mod(request,dev_id):
 	p=OVS.objects.get(id=dev_id)
 	p.name=request.REQUEST["name"]
-	p.dtype=request.REQUEST["type"]
 	p.save()
 	return HttpResponse()
 @csrf_exempt
 def host_tab(request,dev_id):
         p=Device.objects.get(id=dev_id)
-        return render_to_response("top/host_tab.html",{"host":p})
+	image_list=api.glance.image_list_detailed(request)
+	image_list=image_list[0]
+	url=api.nova.server_vnc_console(request,p.instanceId)
+        return render_to_response("top/host_tab.html",{"host":p,"image_list":image_list,"url":url.url})
 @csrf_exempt
 def host_mod(request,dev_id):
         p=Device.objects.get(id=dev_id)
         p.name=request.REQUEST["name"]
-        p.dtype=request.REQUEST["type"]
+	p.flavor=request.REQUEST["flavor"]
+	p.image=request.REQUEST["image"]
         p.save()
         return HttpResponse()
+@csrf_exempt
+def server_create(request,dev_id):
+	res=HttpResponse()
+        p=Device.objects.get(id=dev_id)
+	server=api.nova.server_create(request,p.name,p.image,p.flavor,None,None,None,None)
+	p.instanceId=server.id
+	p.save()
+	res.write(str(server.id))
+        return res
+
 @csrf_exempt
 def con_create(request,top_id):
 	csource=request.REQUEST["source"]

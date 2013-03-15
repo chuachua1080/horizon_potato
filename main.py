@@ -9,12 +9,18 @@ from .dashboards.admin.flavors.tables import FlavorsTable
 
 from horizon import exceptions
 from openstack_dashboard import api
+import urllib
+import urllib2
+import json
+
+
+
 
 def index(request):
 	if request.user.is_authenticated():
 		return HttpResponseRedirect(reverse('potato.pro.index'))
         else:
-		return render_to_response("main/start.html")
+		return HttpResponseRedirect('/auth/login/')
 
 #def help(request):
 #	return render_to_response("help.html" ,context_instance=RequestContext(request))
@@ -55,3 +61,15 @@ class flavors(tables.DataTableView):
         # Sort flavors by size
         flavors.sort(key=lambda f: (f.vcpus, f.ram, f.disk))
         return flavors
+
+
+def images2(request):
+    d=request.user.tenant_id
+#    req=urllib2.Request("http://210.25.137.229:9292/v2/images")
+#    req.add_header("X-Auth-Token",d)
+#    res=urllib2.urlopen(req).read()
+
+
+ #   data=json.loads(res)
+    t=api.nova.server_vnc_console(request,"131b53dc-be69-474d-a6c2-2e5bfcd55605")
+    return render_to_response("test.html",{"p":t.url})
